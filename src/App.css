@@ -1,38 +1,222 @@
-.App {
-  text-align: center;
+/* Global styles and variables */
+:root {
+  --primary-color: #333333;  /* Almost black */
+  --secondary-color: #666666; /* Dark gray */
+  --background-color: #f7f7f7; /* Very light gray */
+  --card-background: #ffffff;
+  --text-primary:#081b32;   /* Deep black */
+  --text-secondary: #555555; /* Medium gray */
+  --word-color: #4B2E39;
+  --accent-color: #e8e8e8; /* Light gray for accents */
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --card-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  --transition: all 0.2s ease;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+body {
+  background-image: url('./bc.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  text-align: center;
+  color: var(--text-primary);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+  letter-spacing: -0.025em;
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.date {
+  text-align: center;
+  color: var(--text-primary);
+  margin: 0.5rem 0 2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.words-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  padding: 0.5rem;
+}
+
+.word-card {
+  background: rgba(245, 245, 245, 0.95); /* Light grey background */
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  transition: var(--transition);
+  border: 1px solid rgba(200, 200, 200, 0.3);
+  backdrop-filter: blur(5px);
+}
+
+.word-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-hover-shadow);
+  background: rgba(250, 250, 250, 0.98); /* Slightly lighter on hover */
+}
+
+.word-card h2 {
+  margin: 0 0 0.75rem 0;
+  color: #333333; /* Darker text for better contrast */
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.word-card p {
+  margin: 0;
+  color: #444444; /* Slightly darker than default for better readability */
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.speak-button {
+  background: rgba(220, 220, 220, 0.9); /* Light grey button */
+  border: none;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  padding: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  color: #333333;
+  transition: var(--transition);
+  font-size: 1rem;
+}
+
+.speak-button:hover {
+  background: #333333;
+  color: #f5f5f5;
+}
+
+/* Loading state */
+.loading-container {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+/* Error state */
+.error-container {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-primary);
+}
+
+.error-message {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem auto;
+    padding: 0 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .words-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .word-card {
+    padding: 1rem;
+  }
+
+  .app-logo {
+    width: 80px;
+  }
+}
+
+/* Add smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Add loading animation */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+.loading {
+  animation: pulse 2s infinite;
+}
+
+/* Add retry button styling */
+.retry-button {
+  background: var(--text-primary);
+  color: var(--card-background);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.retry-button:hover {
+  background: var(--text-secondary);
+}
+
+/* Add header styles */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.app-logo {
+  width: 120px;
+  height: auto;
+  margin-bottom: 1rem;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.view-all-button {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 10px 20px;
+  background-color: var(--text-primary);
   color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition);
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+.view-all-button:hover {
+  background-color: var(--text-secondary);
+  transform: translateY(-2px);
+} 
