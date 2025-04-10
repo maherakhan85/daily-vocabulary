@@ -86,7 +86,7 @@ function App() {
       console.log('Inserting exactly 10 new words');
 
       // Insert exactly 10 words
-      const { data: insertedWords, error: insertError } = await supabase
+      const { error: insertError } = await supabase
         .from('daily_words')
         .insert(newDailyWords)
         .select();

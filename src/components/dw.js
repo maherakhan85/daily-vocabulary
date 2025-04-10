@@ -9,7 +9,6 @@ function DW() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const recordsPerPage = 10;
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
     fetchAllWords();
@@ -17,9 +16,9 @@ function DW() {
 
   const fetchAllWords = async () => {
     try {
-      const { data, error, count } = await supabase
+      const { data, error } = await supabase
         .from('daily_words')
-        .select('*', { count: 'exact' })
+        .select('*')
         .order('date', { ascending: false });
 
       if (error) {
@@ -27,8 +26,7 @@ function DW() {
       }
 
       setWords(data);
-      setTotalPages(Math.ceil(count / recordsPerPage));
-      setCount(count);
+      setTotalPages(Math.ceil(data.length / recordsPerPage));
       setLoading(false);
     } catch (error) {
       setError('Error fetching data: ' + error.message);
