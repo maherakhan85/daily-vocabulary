@@ -21,7 +21,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // Initialize connection test
 const testConnection = async () => {
   try {
-    const { data, error } = await supabase.from('daily_words').select('count', { count: 'exact', head: true })
+    const { error } = await supabase.from('daily_words').select('count', { count: 'exact', head: true })
     if (error) throw error
     console.log('✅ Supabase connection successful')
   } catch (error) {
