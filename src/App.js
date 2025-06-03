@@ -9,10 +9,25 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showDW, setShowDW] = useState(false);
+  const [flipped, setFlipped] = useState(Array(10).fill(false));
+  const [progress, setProgress] = useState(0);
+  const [learned, setLearned] = useState(() => {
+    const savedLearned = localStorage.getItem('learnedWords');
+    return savedLearned ? JSON.parse(savedLearned) : [];
+  });
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
   useEffect(() => {
     fetchDailyWords();
   }, []);
+
+  useEffect(() => {
+    const todayLearned = learned.filter(id => 
+      words.some(word => word.id === id)
+    );
+    setProgress(todayLearned.length);
+    localStorage.setItem('learnedWords', JSON.stringify(learned));
+  }, [learned, words]);
 
   const fetchDailyWords = async () => {
     try {
@@ -120,6 +135,44 @@ function App() {
     window.speechSynthesis.speak(utterance);
   };
 
+  const nextCard = () => {
+    if (currentCardIndex < words.length - 1) {
+      setCurrentCardIndex(currentCardIndex + 1);
+      setFlipped(prev => {
+        const newFlipped = [...prev];
+        newFlipped[currentCardIndex + 1] = false;
+        return newFlipped;
+      });
+    }
+  };
+
+  const prevCard = () => {
+    if (currentCardIndex > 0) {
+      setCurrentCardIndex(currentCardIndex - 1);
+      setFlipped(prev => {
+        const newFlipped = [...prev];
+        newFlipped[currentCardIndex - 1] = false;
+        return newFlipped;
+      });
+    }
+  };
+
+  // Add keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === 'ArrowRight') nextCard();
+      if (e.key === 'ArrowLeft') prevCard();
+      if (e.key === ' ') {
+        const newFlipped = [...flipped];
+        newFlipped[currentCardIndex] = !newFlipped[currentCardIndex];
+        setFlipped(newFlipped);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [currentCardIndex, flipped]);
+
   if (loading) {
     return <div className="loading-container loading">Loading words...</div>;
   }
@@ -145,36 +198,88 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Mahera's Daily Vocabulary</h1>
+      <h1>Vocabulary Builder</h1>
       <p className="date">{format(new Date(), 'MMMM dd, yyyy')}</p>
+      <div className="progress-bar">
+        <div 
+          className="progress-fill" 
+          style={{width: `${(progress/words.length) * 100}%`}}
+        ></div>
+      </div>
+      <p className="progress-text">
+        Words learned today: {progress} of {words.length}
+        <br />
+        Card {currentCardIndex + 1} of {words.length}
+      </p>
       
       <button 
         className="view-all-button"
         onClick={() => setShowDW(!showDW)}
       >
-        {showDW ? 'Show Today\'s Words' : 'View All Words'}
+        {showDW ? 'Show Today\'s Words' : 'View Progress'}
       </button>
 
       {showDW ? (
         <DW />
       ) : (
-        <div className="words-grid">
-          {words.length > 0 ? (
-            words.map((word) => (
-              <div key={word.id} className="word-card">
-                <h2>{word.word}</h2>
+        <div className="flashcard-container">
+          <div 
+            className={`word-card ${flipped[currentCardIndex] ? 'flipped' : ''}`}
+            onClick={() => {
+              const newFlipped = [...flipped];
+              newFlipped[currentCardIndex] = !newFlipped[currentCardIndex];
+              setFlipped(newFlipped);
+            }}
+          >
+            <div className="card-inner">
+              <div className="card-front">
+                <h2>{words[currentCardIndex]?.word}</h2>
+                <p className="tap-hint">Tap to reveal meaning</p>
                 <button 
                   className="speak-button"
-                  onClick={() => speakWord(word.word)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    speakWord(words[currentCardIndex].word);
+                  }}
                 >
                   🔊
                 </button>
-                <p>{word.meaning}</p>
               </div>
-            ))
-          ) : (
-            <p>No words available for today.</p>
-          )}
+              <div className="card-back">
+                <p>{words[currentCardIndex]?.meaning}</p>
+                <button 
+                  className={`learn-button ${learned.includes(words[currentCardIndex]?.id) ? 'learned' : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const wordId = words[currentCardIndex]?.id;
+                    if (wordId && !learned.includes(wordId)) {
+                      const newLearned = [...learned, wordId];
+                      setLearned(newLearned);
+                    }
+                  }}
+                >
+                  {learned.includes(words[currentCardIndex]?.id) ? '✓ Learned' : 'Mark as Learned'}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="navigation-controls">
+            <button 
+              className="nav-button prev"
+              onClick={prevCard}
+              disabled={currentCardIndex === 0}
+            >
+              ←
+            </button>
+            <button 
+              className="nav-button next"
+              onClick={nextCard}
+              disabled={currentCardIndex === words.length - 1}
+            >
+              →
+            </button>
+          </div>
         </div>
       )}
     </div>
