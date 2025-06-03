@@ -208,8 +208,6 @@ function App() {
       </div>
       <p className="progress-text">
         Words learned today: {progress} of {words.length}
-        <br />
-        Card {currentCardIndex + 1} of {words.length}
       </p>
       
       <button 
@@ -222,64 +220,46 @@ function App() {
       {showDW ? (
         <DW />
       ) : (
-        <div className="flashcard-container">
-          <div 
-            className={`word-card ${flipped[currentCardIndex] ? 'flipped' : ''}`}
-            onClick={() => {
-              const newFlipped = [...flipped];
-              newFlipped[currentCardIndex] = !newFlipped[currentCardIndex];
-              setFlipped(newFlipped);
-            }}
-          >
-            <div className="card-inner">
+        <div className="words-grid">
+          {words.map((word, index) => (
+            <div 
+              key={word.id}
+              className={`word-card ${flipped[index] ? 'flipped' : ''}`}
+              onClick={() => {
+                const newFlipped = [...flipped];
+                newFlipped[index] = !newFlipped[index];
+                setFlipped(newFlipped);
+              }}
+            >
               <div className="card-front">
-                <h2>{words[currentCardIndex]?.word}</h2>
+                <h2>{word.word}</h2>
                 <p className="tap-hint">Tap to reveal meaning</p>
                 <button 
                   className="speak-button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    speakWord(words[currentCardIndex].word);
+                    speakWord(word.word);
                   }}
                 >
                   🔊
                 </button>
               </div>
               <div className="card-back">
-                <p>{words[currentCardIndex]?.meaning}</p>
+                <p>{word.meaning}</p>
                 <button 
-                  className={`learn-button ${learned.includes(words[currentCardIndex]?.id) ? 'learned' : ''}`}
+                  className={`learn-button ${learned.includes(word.id) ? 'learned' : ''}`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    const wordId = words[currentCardIndex]?.id;
-                    if (wordId && !learned.includes(wordId)) {
-                      const newLearned = [...learned, wordId];
-                      setLearned(newLearned);
+                    if (!learned.includes(word.id)) {
+                      setLearned([...learned, word.id]);
                     }
                   }}
                 >
-                  {learned.includes(words[currentCardIndex]?.id) ? '✓ Learned' : 'Mark as Learned'}
+                  {learned.includes(word.id) ? '✓ Learned' : 'Mark as Learned'}
                 </button>
               </div>
             </div>
-          </div>
-
-          <div className="navigation-controls">
-            <button 
-              className="nav-button prev"
-              onClick={prevCard}
-              disabled={currentCardIndex === 0}
-            >
-              ←
-            </button>
-            <button 
-              className="nav-button next"
-              onClick={nextCard}
-              disabled={currentCardIndex === words.length - 1}
-            >
-              →
-            </button>
-          </div>
+          ))}
         </div>
       )}
     </div>

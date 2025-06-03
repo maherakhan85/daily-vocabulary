@@ -53,9 +53,11 @@ h1 {
 
 .words-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-  padding: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 3.5rem;
+  padding: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .flashcard-container {
@@ -70,52 +72,30 @@ h1 {
 }
 
 .word-card {
-  background: transparent;
-  border-radius: 0.75rem;
-  padding: 1.25rem;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 1rem;
+  padding: 0.75rem;
   position: relative;
   cursor: pointer;
-  width: 240px;
-  height: 180px;
+  width: 180px;
+  height: 130px;
   margin: 0 auto;
-  perspective: 1500px;
-}
-
-/* Add stacked cards effect */
-.word-card::before,
-.word-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: -1;
-}
-
-.word-card::before {
-  transform: translateY(4px) scale(0.98);
-}
-
-.word-card::after {
-  transform: translateY(8px) scale(0.96);
-}
-
-.card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   transition: transform 0.6s;
   transform-style: preserve-3d;
-  transform-origin: center;
 }
 
-.word-card.flipped .card-inner {
+.word-card.flipped {
   transform: rotateY(180deg);
+}
+
+/* Remove nested card-inner */
+.card-inner {
+  display: none;
 }
 
 .card-front, .card-back {
@@ -128,13 +108,11 @@ h1 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1.25rem;
-  border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
+  padding: 1rem;
+  background: rgba(255, 255, 255, 1);
   text-align: center;
+  border-radius: 1rem;
+  backdrop-filter: none;
 }
 
 .card-front {
@@ -146,23 +124,23 @@ h1 {
 }
 
 .card-front h2 {
-  font-size: 2rem;
+  font-size: 1.3rem;
   margin: 0;
   color: var(--text-primary);
   font-weight: 600;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: none;
   letter-spacing: -0.02em;
   width: 100%;
-  padding: 0 0.75rem;
+  padding: 0 0.5rem;
 }
 
 .tap-hint {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: #666;
   font-style: italic;
   opacity: 0.8;
   position: absolute;
-  bottom: 1rem;
+  bottom: 0.75rem;
   left: 0;
   right: 0;
   text-align: center;
@@ -170,12 +148,12 @@ h1 {
 }
 
 .card-back p {
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-align: center;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1.4;
   color: var(--text-primary);
-  padding: 0 1rem;
+  padding: 0 0.75rem;
   max-width: 100%;
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -205,20 +183,20 @@ h1 {
 
 .learn-button {
   margin: 0;
-  padding: 0.6rem 1.2rem;
+  padding: 0.4rem 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   background: linear-gradient(145deg, #4CAF50, #45a049);
   color: white;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.3s ease;
-  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
   position: absolute;
-  bottom: 1rem;
+  bottom: 0.75rem;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .learn-button.learned {
@@ -288,22 +266,23 @@ h1 {
   }
 
   .words-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2.5rem;
+    padding: 2rem;
   }
 
   .word-card {
-    width: 220px;
-    height: 160px;
-    padding: 1rem;
+    width: 140px;
+    height: 100px;
+    padding: 0.5rem;
   }
 
   .card-front h2 {
-    font-size: 1.8rem;
+    font-size: 1.1rem;
   }
 
   .card-back p {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
   }
 
   .speak-button {
@@ -324,6 +303,11 @@ h1 {
 
   .app-logo {
     width: 80px;
+  }
+
+  .learn-button {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.75rem;
   }
 }
 
